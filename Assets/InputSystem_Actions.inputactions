@@ -38,11 +38,11 @@
                 },
                 {
                     "name": "",
-                    "id": "10092722-3f03-41d7-9436-7ec65fca76c7",
-                    "path": "<Touchscreen>/primaryTouch/position",
+                    "id": "1b3eea24-6047-4933-8fff-3aa6e223a6ac",
+                    "path": "<Touchscreen>/touch*/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Touch",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -53,18 +53,18 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard&Mouse",
                     "action": "Touch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "fded2778-9dbb-4cd3-acb6-1f8bc5903620",
-                    "path": "<Touchscreen>/primaryTouch/indirectTouch",
+                    "id": "a0972b5a-4ee5-4137-91a0-d1005fdd4d3a",
+                    "path": "<Touchscreen>/touch*/press",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Touch",
                     "action": "Touch",
                     "isComposite": false,
                     "isPartOfComposite": false

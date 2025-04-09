@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Canon;
 using Canon.Bullets;
 using UI;
@@ -31,6 +32,9 @@ public class PlayerInput : MonoBehaviour
         m_PointAction = m_InputAsset["Player/Point"];
         m_TouchAction = m_InputAsset["Player/Touch"];
         
+        m_TouchAction.started  += OnBeginHold;
+        m_TouchAction.canceled += OnEndHold;
+        
         m_BulletsSwitch.OnSwitch.AddListener(OnBulletTypeChanged);
     }
     private void OnDisable()
@@ -54,28 +58,37 @@ public class PlayerInput : MonoBehaviour
     }
     private void Update()
     {
-        if (m_TouchAction.WasPerformedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
-        {
-            m_IsHolding = true;
-            m_HoldTime  = Time.time;
-        }
-        
         if (m_IsHolding)
         {
-            if (m_TouchAction.WasReleasedThisFrame())
-            {
-                m_IsHolding = false;
-                float holdTime = 0.1f + Mathf.Clamp01((Time.time - m_HoldTime) / m_MaxHoldTime) * 0.9f;
-                m_Canon.Fire(holdTime);
-                
-                return;
-            }
-            
             Vector2 point      = m_PointAction.ReadValue<Vector2>();
             Vector3 worldPoint = m_Camera.ScreenToWorldPoint(new Vector3(point.x, point.y, 0.0f));
             m_Canon.AimPoint = worldPoint;
         }
     }
+    
+    private void OnBeginHold(InputAction.CallbackContext context)
+    {
+        Vector2             touchPosition = m_PointAction.ReadValue<Vector2>();
+        PointerEventData    eventData     = new(EventSystem.current) {position = touchPosition};
+        List<RaycastResult> results       = new();
+        EventSystem.current.RaycastAll(eventData, results);
+        
+        if (results.Count > 0)
+            return;
+        
+        m_IsHolding = true;
+        m_HoldTime  = Time.time;
+    }
+    private void OnEndHold(InputAction.CallbackContext context)
+    {
+        if (!m_IsHolding)
+            return;
+        
+        m_IsHolding = false;
+        float holdTime = 0.1f + Mathf.Clamp01((Time.time - m_HoldTime) / m_MaxHoldTime) * 0.9f;
+        m_Canon.Fire(holdTime);
+    }
+    
     private void OnBulletTypeChanged(bool isOn)
     {
         m_Canon.BulletPrefab = m_BulletsTypes[isOn ? 1 : 0];
